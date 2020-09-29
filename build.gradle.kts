@@ -1,10 +1,11 @@
+
+
 //group = "org.evoleq"
 //version = "1.0.0"
 
-
 plugins {
     //java
-    kotlin("multiplatform") version "1.3.70"
+    kotlin("multiplatform") version Config.Versions.kotlin
     id ("com.github.hierynomus.license") version "0.15.0"
     `maven-publish`
     maven
@@ -28,7 +29,7 @@ kotlin {
         dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Config.Versions.coroutines}")
         }
     }
     // JVM-specific tests and their dependencies:
@@ -42,7 +43,7 @@ kotlin {
         dependencies {
             //implementation(kotlin("js"))
             implementation(kotlin("reflect"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.5")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${Config.Versions.coroutines}")
         }/*  */
     }
     js().compilations["test"].defaultSourceSet {/* ... */ }
@@ -52,7 +53,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation(kotlin("reflect"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Config.Versions.coroutines}")
                 implementation(project(":mathcat-core"))
                 implementation(project(":mathcat-morphism"))
             }
@@ -64,6 +65,19 @@ kotlin {
             }
         }
     }
+    /*
+    configure(listOf(targets["metadata"], jvm(), js())) {
+        mavenPublication {
+            val targetPublication = this@mavenPublication
+            tasks.withType<AbstractPublishToMaven>()
+                .matching { it.publication == targetPublication }
+                .all { onlyIf { findProperty("isMainHost") == "true" } }
+            
+            
+        }
+    }
+    
+     */
 }
 
 
@@ -88,3 +102,4 @@ val licenseFormatJvmMain by creating(com.hierynomus.gradle.license.tasks.License
     }
 }
 
+apply(from = "../publish.gradle.kts")
