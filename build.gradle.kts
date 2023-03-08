@@ -1,4 +1,5 @@
 import org.evoleq.publish.mppPublications
+import org.evoleq.publish.updateVersion
 
 plugins {
     kotlin("multiplatform") version Config.Versions.kotlin
@@ -12,9 +13,24 @@ plugins {
 group = Config.Module.MathcatYoneda.group
 version = Config.Module.MathcatYoneda.version//+"-SNAPSHOT"
 
+val mathcatRepo: String by project
+
+val jfrogUser: String by project
+val jfrogMathcatPw: String by project
+
+val jfrogEvoleqContextUrl: String by project
+val jfrogReleaseLibs: String by project
+
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url = uri(mathcatRepo)
+        credentials {
+            username = jfrogUser
+            password = jfrogMathcatPw
+        }
+    }
 }
 
 kotlin {
@@ -60,7 +76,18 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
+/*
+        val jvmMain by getting {
+            dependencies {
+                implementation( "org.evoleq:mathcat-core:1.2.0")
+            }
+        }
+
+
+ */
     }
+
+
 }
 
 
@@ -85,11 +112,7 @@ val licenseFormatJvmMain by creating(com.hierynomus.gradle.license.tasks.License
     }
 }
 
-val jfrogUser: String by project
-val jfrogMathcatPw: String by project
 
-val jfrogEvoleqContextUrl: String by project
-val jfrogReleaseLibs: String by project
 
 artifactory{
     setContextUrl (jfrogEvoleqContextUrl)
@@ -114,3 +137,5 @@ artifactory{
         }
     }
 }
+
+updateVersion()
